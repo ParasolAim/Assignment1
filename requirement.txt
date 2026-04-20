@@ -1,0 +1,10 @@
+matplotlib
+torch
+torchaudio
+metrics (in GitHub)
+spicy
+numpy
+panda
+encodec
+soundfile
+pathlib
