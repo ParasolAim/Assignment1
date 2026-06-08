@@ -1,0 +1,65 @@
+import os
+import matplotlib.pyplot as plt
+import pandas as pd
+
+# Đường dẫn tới file dữ liệu
+file_path = 'results_Taylor Swift - Our Song.csv'
+
+# Kiểm tra xem file có tồn tại hay không trước khi đọc
+if os.path.exists(file_path):
+    # TỰ ĐỘNG ĐỌC DỮ LIỆU TỪ FILE CSV
+    df = pd.read_csv(file_path)
+    print("[+] Đã tải dữ liệu từ file thành công!")
+    print(df.head()) # Hiển thị thử vài dòng đầu tiên lên màn hình terminal
+    
+    # Khởi tạo giao diện đồ thị (3 biểu đồ con)
+    fig, axes = plt.subplots(1, 3, figsize=(18, 5))
+    fig.suptitle('THỐNG KÊ HIỆU SUẤT TỰ ĐỘNG TỪ FILE DATA.CSV', fontsize=14, fontweight='bold', y=1.05)
+
+    # ----------------------------------------------------
+    # Đồ thị 1: Chất lượng tín hiệu (MSE & SNR)
+    # ----------------------------------------------------
+    ax1 = axes[0]
+    color = '#e74c3c'
+    ax1.set_xlabel('Bandwidth (kbps)', fontweight='bold')
+    ax1.set_ylabel('MSE', color=color, fontweight='bold')
+    ax1.plot(df['bandwidth_kbps'], df['mse'], color=color, marker='o', linewidth=2)
+    ax1.tick_params(axis='y', labelcolor=color)
+
+    ax1_2 = ax1.twinx()  
+    color = '#2ecc71'
+    ax1_2.set_ylabel('SNR (dB)', color=color, fontweight='bold')
+    ax1_2.plot(df['bandwidth_kbps'], df['snr_db'], color=color, marker='s', linewidth=2)
+    ax1_2.tick_params(axis='y', labelcolor=color)
+    ax1.set_title('Chất lượng tín hiệu (MSE vs SNR)', fontsize=11, fontweight='bold', pad=10)
+    ax1.grid(True, linestyle='--', alpha=0.5)
+
+    # ----------------------------------------------------
+    # Đồ thị 2: Tỷ lệ nén (Compression Ratio)
+    # ----------------------------------------------------
+    ax2 = axes[1]
+    ax2.plot(df['bandwidth_kbps'], df['compression_ratio'], color='#f39c12', marker='^', linewidth=2, linestyle='--')
+    ax2.set_title('Tỷ lệ nén (Compression Ratio)', fontsize=11, fontweight='bold', pad=10)
+    ax2.set_xlabel('Bandwidth (kbps)', fontweight='bold')
+    ax2.set_ylabel('Tỷ lệ nén', fontweight='bold')
+    ax2.grid(True, linestyle='--', alpha=0.5)
+
+    # ----------------------------------------------------
+    # Đồ thị 3: Tốc độ Bitrate của các thành phần
+    # ----------------------------------------------------
+    ax3 = axes[2]
+    ax3.plot(df['bandwidth_kbps'], df['bass_bitrate_file_pt'], label='Bass', color='#3498db', marker='.')
+    ax3.plot(df['bandwidth_kbps'], df['vocal_bitrate_file_pt'], label='Vocal', color='#9b59b6', marker='.', linestyle=':')
+    ax3.plot(df['bandwidth_kbps'], df['high_bitrate_file_pt'], label='High', color='#1abc9c', marker='.', linestyle='-.')
+    ax3.set_title('Bitrate từng thành phần âm thanh', fontsize=11, fontweight='bold', pad=10)
+    ax3.set_xlabel('Bandwidth (kbps)', fontweight='bold')
+    ax3.set_ylabel('Bitrate (pt)', fontweight='bold')
+    ax3.legend(loc='upper left')
+    ax3.grid(True, linestyle='--', alpha=0.5)
+
+    # Hiển thị biểu đồ
+    plt.tight_layout()
+    plt.show()
+
+else:
+    print(f"[-] Lỗi: Không tìm thấy file dữ liệu tại đường dẫn '{file_path}'. Bạn vui lòng kiểm tra lại vị trí lưu file.")
